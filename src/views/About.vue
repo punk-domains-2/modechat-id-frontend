@@ -50,7 +50,7 @@
 
       <p>
         The protocol is completely permissionless and the code is open-sourced on our Github: 
-        <a href="https://github.com/modechatxyz">https://github.com/modechatxyz</a>.
+        <a href="https://github.com/punk-domains-2/modechat-id-frontend">https://github.com/punk-domains-2/modechat-id-frontend</a>.
       </p>
 
       <h3>
