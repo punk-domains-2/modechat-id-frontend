@@ -56,7 +56,7 @@ export default function useChainHelpers() {
         chainId: ethers.utils.hexValue(919),
         chainName: networkName,
         nativeCurrency: { decimals: 18, name: "ETH", symbol: "ETH" }, 
-        rpcUrls: ["https://testnet.mode.network"]
+        rpcUrls: ["https://sepolia.mode.network"]
       }] 
     } else if (networkName == "Mode Mainnet") {
       method = "wallet_addEthereumChain"
