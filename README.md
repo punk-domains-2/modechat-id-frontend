@@ -1,6 +1,6 @@
 # ModeChat ID frontend
 
-Frontend for .modechat domain service powered by the [Punk Domains protocol](https://punk.domains).
+Frontend for `.modechat` domain service, powered by the [Punk Domains protocol](https://punk.domains).
 
 ## Quickstart
 

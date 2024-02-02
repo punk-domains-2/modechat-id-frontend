@@ -10,7 +10,7 @@ export default {
     networkCurrency: "ETH",
     networkName: "Unsupported Network",
     supportedNetworks: {
-      919: "Mode Testnet"
+      34443: "Mode"
     }
   }),
 
@@ -68,7 +68,7 @@ export default {
   mutations: { 
     setNetworkData(state) {
       // TODO
-      state.networkName = "Mode Testnet";
+      state.networkName = "Mode";
       state.networkCurrency = "ETH";
     }
   },

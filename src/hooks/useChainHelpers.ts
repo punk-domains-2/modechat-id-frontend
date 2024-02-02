@@ -8,7 +8,7 @@ export default function useChainHelpers() {
     } else if (chainId === 919) {
       return "Mode Testnet";
     } else if (chainId === 34443) {
-      return "Mode Mainnet";
+      return "Mode";
     } else {
       return "Unsupported Network";
     }
@@ -58,7 +58,7 @@ export default function useChainHelpers() {
         nativeCurrency: { decimals: 18, name: "ETH", symbol: "ETH" }, 
         rpcUrls: ["https://sepolia.mode.network"]
       }] 
-    } else if (networkName == "Mode Mainnet") {
+    } else if (networkName == "Mode") {
       method = "wallet_addEthereumChain"
       params = [{ 
         blockExplorerUrls: [ "https://explorer.mode.network/" ],

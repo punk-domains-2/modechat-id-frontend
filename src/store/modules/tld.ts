@@ -10,12 +10,12 @@ export default {
   
   state: () => ({ 
     discountPercentage: 0,
-    tldName: ".testmode",
-    tldAddress: "0x32749Ab66ef1B85aFfF3425d5766d8025E407769", // TODO
+    tldName: ".modechat",
+    tldAddress: "0x523a7050df3DC7E96B7faAF4dDECCc244d886a90", // TODO
     tldContract: null,
-    tldChainId: 919,
-    tldChainName: "Mode Testnet",
-    minterAddress: "0x63f8691b048e68E1C3d6E135aDc81291A9bb1987", // TODO
+    tldChainId: 34443,
+    tldChainName: "Mode",
+    minterAddress: "0xf6A44f61030115B5dA382b198B711130D98390d9", // TODO
     minterContract: null,
     minterLoadingData: false,
     minterPaused: true,

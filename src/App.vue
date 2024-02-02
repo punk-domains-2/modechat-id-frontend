@@ -191,7 +191,7 @@ export default {
 
     const coinbaseConnector = new CoinbaseWalletConnector({
 			appName: "ModeChat ID",
-			jsonRpcUrl: "https://sepolia.mode.network/",
+			jsonRpcUrl: "https://mainnet.mode.network/",
 		});
 
 		const mmConnector = new MetaMaskConnector({
@@ -202,7 +202,7 @@ export default {
     // @TODO: make sure to add your own project ID (and verify your domain with wallet connect)
 		const wcConnector = new WalletConnectConnector({
 			projectId: 'aff0fd1035c24a0954db35a67067b0f0', // @TODO: use your own project ID!!!
-      chains: [919],
+      chains: [34443],
       showQrModal: true,
       qrModalOptions: {
         themeMode: 'dark',
