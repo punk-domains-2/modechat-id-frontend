@@ -17,7 +17,7 @@ export default {
   getters: { 
     getBlockExplorerBaseUrl() {
       // TODO
-      return "https://sepolia.explorer.mode.network/";
+      return "https://explorer.mode.network/";
     },
     
     getChainId() {
