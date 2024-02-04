@@ -15,14 +15,14 @@
         <div class="d-flex ms-auto">
 
           <div class="navbar-menu-buttons">
-
-            <!--
+            
             <a 
               class="btn btn-primary mx-2 navbar-menu-btn" 
-              href="https://fantom.alwaysliquid.com" 
+              href="https://modechat.xyz" 
               target="_blank"
-            >NFT Launchpad</a>
+            >Chat on ModeChat</a>
 
+            <!--
             <a 
               class="btn btn-primary mx-2 navbar-menu-btn" 
               href="https://paintswap.finance/marketplace/fantom/collections/fantom-names" 
