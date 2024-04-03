@@ -196,7 +196,11 @@ export default {
     async checkIfAdmin({ commit, rootGetters }) {
       if (address.value) {
         // check if user has any admin privileges
-        const minterIntfc = new ethers.utils.Interface(MinterAbi);
+        const minterIntfc = new ethers.utils.Interface([
+          "function owner() public view returns (address)",
+          "function isManager(address) public view returns (bool)"
+        ]);
+
         const minterContract = new ethers.Contract(rootGetters["tld/getMinterAddress"], minterIntfc, signer.value);
 
         const minterAdmin = await minterContract.owner();
@@ -205,6 +209,17 @@ export default {
           commit("setIsMinterAdmin", true);
         } else {
           commit("setIsMinterAdmin", false);
+        }
+
+        if (minterAdmin != address.value) {
+          // check if current user is manager of the minter contract
+          const isManager = await minterContract.isManager(address.value);
+
+          if (isManager) {
+            commit("setIsMinterAdmin", true);
+          } else {
+            commit("setIsMinterAdmin", false);
+          }
         }
 
         // check if user has any admin privileges
