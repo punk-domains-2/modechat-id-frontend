@@ -41,22 +41,6 @@
 
             <!--
 
-            <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectWalletConnect">
-              <img src="./assets/wallets/wc.png" class="card-img-top card-img-wallet" alt="Wallet Connect">
-            </div>
-
-            <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectWalletConnect">
-              <img src="./assets/wallets/minerva.png" class="card-img-top card-img-wallet" alt="Minerva">
-            </div>
-
-            <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectWalletConnect">
-              <img src="./assets/wallets/argent.png" class="card-img-top card-img-wallet" alt="Argent">
-            </div>
-
-            <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectWalletConnect">
-              <img src="./assets/wallets/1inch.png" class="card-img-top card-img-wallet" alt="1inch">
-            </div>
-
             <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
               <img src="./assets/wallets/imtoken.png" class="card-img-top card-img-wallet" alt="imToken">
             </div>
@@ -81,7 +65,7 @@
 
 <script lang="ts">
 import { ethers } from 'ethers';
-import { useEthers, useWallet, MetaMaskConnector, WalletConnectConnector, CoinbaseWalletConnector } from 'vue-dapp';
+import { useEthers, useWallet, MetaMaskConnector, CoinbaseWalletConnector } from 'vue-dapp';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
@@ -99,8 +83,6 @@ export default {
     if (!this.isActivated) {
 			if (localStorage.getItem("connected") == "metamask") {
 				this.connectMetaMask();
-			} else if (localStorage.getItem("connected") == "walletconnect") {
-				this.connectWalletConnect();
 			} else if (localStorage.getItem("connected") == "coinbase") {
 				this.connectCoinbase();
 			}
@@ -143,12 +125,6 @@ export default {
 			await this.connectWith(this.mmConnector);
 			localStorage.setItem("connected", "metamask"); // store in local storage to autoconnect next time
 			document.getElementById('closeConnectModal').click();
-		},
-
-		async connectWalletConnect() {
-      document.getElementById('closeConnectModal').click();
-			await this.connectWith(this.wcConnector);
-			localStorage.setItem("connected", "walletconnect"); // store in local storage to autoconnect next time
 		},
 
     async fetchReferrer() {
@@ -198,30 +174,8 @@ export default {
 			appUrl: "https://id.modechat.xyz",
 		});
 
-    // wallet connect v2
-    // @TODO: make sure to add your own project ID (and verify your domain with wallet connect)
-		const wcConnector = new WalletConnectConnector({
-			projectId: 'aff0fd1035c24a0954db35a67067b0f0', // @TODO: use your own project ID!!!
-      chains: [34443],
-      showQrModal: true,
-      qrModalOptions: {
-        themeMode: 'dark',
-        themeVariables: undefined,
-        chainImages: undefined,
-        desktopWallets: undefined,
-        walletImages: undefined,
-        mobileWallets: undefined,
-        enableExplorer: true,
-        explorerAllowList: undefined,
-        tokenImages: undefined,
-        privacyPolicyUrl: undefined,
-        explorerDenyList: undefined,
-        termsOfServiceUrl: undefined,
-      }
-		});
-
     return {
-      address, chainId, coinbaseConnector, connectWith, getFallbackProvider, isActivated, mmConnector, wcConnector
+      address, chainId, coinbaseConnector, connectWith, getFallbackProvider, isActivated, mmConnector
     }
   },
 
@@ -238,8 +192,6 @@ export default {
       if (!this.isActivated) {
         if (localStorage.getItem("connected") == "metamask") {
           this.connectMetaMask();
-        } else if (localStorage.getItem("connected") == "walletconnect") {
-          this.connectWalletConnect();
         } else if (localStorage.getItem("connected") == "coinbase") {
           this.connectCoinbase();
         }
