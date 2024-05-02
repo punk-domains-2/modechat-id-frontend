@@ -1,167 +1,167 @@
-import { ethers } from 'ethers';
-import tldAbi from '../../abi/PunkTLD.json';
-import MinterAbi from "../../abi/Minter.json";
-import useChainHelpers from "../../hooks/useChainHelpers";
+import { ethers } from 'ethers'
+import tldAbi from '../../abi/PunkTLD.json'
+import MinterAbi from '../../abi/Minter.json'
+import useChainHelpers from '../../hooks/useChainHelpers'
 
-const { getFallbackProvider } = useChainHelpers();
+const { getFallbackProvider } = useChainHelpers()
 
 export default {
-  namespaced: true,
-  
-  state: () => ({ 
-    discountPercentage: 0,
-    tldName: ".modechat",
-    tldAddress: "0x523a7050df3DC7E96B7faAF4dDECCc244d886a90", // TODO
-    tldContract: null,
-    tldChainId: 34443,
-    tldChainName: "Mode",
-    minterAddress: "0xf6A44f61030115B5dA382b198B711130D98390d9", // TODO
-    minterContract: null,
-    minterLoadingData: false,
-    minterPaused: true,
-    minterTldPrice1: 1,
-    minterTldPrice2: 0.1,
-    minterTldPrice3: 0.03,
-    minterTldPrice4: 0.008,
-    minterTldPrice5: 0.0006,
-    referralFee: 1000
-  }),
+	namespaced: true,
 
-  getters: { 
-    getMinterDiscountPercentage(state) {
-      return state.discountPercentage;
-    },
-    getTldAddress(state) {
-      return state.tldAddress;
-    },
-    getTldContract(state) {
-      return state.tldContract;
-    },
-    getTldChainId(state) {
-      return state.tldChainId;
-    },
-    getTldChainName(state) {
-      return state.tldChainName;
-    },
-    getTldName(state) {
-      return state.tldName;
-    },
-    getMinterAddress(state) {
-      return state.minterAddress;
-    },
-    getMinterContract(state) {
-      return state.minterContract;
-    },
-    getMinterLoadingData(state) {
-      return state.minterLoadingData;
-    },
-    getMinterPaused(state) {
-      return state.minterPaused;
-    },
-    getMinterTldPrice1(state) {
-      return state.minterTldPrice1;
-    },
-    getMinterTldPrice2(state) {
-      return state.minterTldPrice2;
-    },
-    getMinterTldPrice3(state) {
-      return state.minterTldPrice3;
-    },
-    getMinterTldPrice4(state) {
-      return state.minterTldPrice4;
-    },
-    getMinterTldPrice5(state) {
-      return state.minterTldPrice5;
-    },
-    getReferralFee(state) {
-      return state.referralFee;
-    }
-  },
+	state: () => ({
+		discountPercentage: 0,
+		tldName: '.modechat',
+		tldAddress: '0x523a7050df3DC7E96B7faAF4dDECCc244d886a90', // TODO
+		tldContract: null,
+		tldChainId: 34443,
+		tldChainName: 'Mode',
+		minterAddress: '0xf6A44f61030115B5dA382b198B711130D98390d9', // TODO
+		minterContract: null,
+		minterLoadingData: false,
+		minterPaused: true,
+		minterTldPrice1: 1,
+		minterTldPrice2: 0.1,
+		minterTldPrice3: 0.03,
+		minterTldPrice4: 0.008,
+		minterTldPrice5: 0.0006,
+		referralFee: 1000,
+	}),
 
-  mutations: {
-    setTldContract(state) {
-      let fProvider = getFallbackProvider(state.tldChainId);
+	getters: {
+		getMinterDiscountPercentage(state) {
+			return state.discountPercentage
+		},
+		getTldAddress(state) {
+			return state.tldAddress
+		},
+		getTldContract(state) {
+			return state.tldContract
+		},
+		getTldChainId(state) {
+			return state.tldChainId
+		},
+		getTldChainName(state) {
+			return state.tldChainName
+		},
+		getTldName(state) {
+			return state.tldName
+		},
+		getMinterAddress(state) {
+			return state.minterAddress
+		},
+		getMinterContract(state) {
+			return state.minterContract
+		},
+		getMinterLoadingData(state) {
+			return state.minterLoadingData
+		},
+		getMinterPaused(state) {
+			return state.minterPaused
+		},
+		getMinterTldPrice1(state) {
+			return state.minterTldPrice1
+		},
+		getMinterTldPrice2(state) {
+			return state.minterTldPrice2
+		},
+		getMinterTldPrice3(state) {
+			return state.minterTldPrice3
+		},
+		getMinterTldPrice4(state) {
+			return state.minterTldPrice4
+		},
+		getMinterTldPrice5(state) {
+			return state.minterTldPrice5
+		},
+		getReferralFee(state) {
+			return state.referralFee
+		},
+	},
 
-      const tldIntfc = new ethers.utils.Interface(tldAbi);
-      state.tldContract = new ethers.Contract(state.tldAddress, tldIntfc, fProvider);
-    },
+	mutations: {
+		setTldContract(state) {
+			let fProvider = getFallbackProvider(state.tldChainId)
 
-    setMinterContract(state, contract) {
-      state.minterContract = contract;
-    },
+			const tldIntfc = new ethers.utils.Interface(tldAbi)
+			state.tldContract = new ethers.Contract(state.tldAddress, tldIntfc, fProvider)
+		},
 
-    setDiscountPercentage(state, percentage) {
-      state.discountPercentage = percentage;
-    },
+		setMinterContract(state, contract) {
+			state.minterContract = contract
+		},
 
-    setMinterLoadingData(state, loading) {
-      state.minterLoadingData = loading;
-    },
+		setDiscountPercentage(state, percentage) {
+			state.discountPercentage = percentage
+		},
 
-    setMinterPaused(state, paused) {
-      state.minterPaused = paused;
-    },
+		setMinterLoadingData(state, loading) {
+			state.minterLoadingData = loading
+		},
 
-    setMinterTldPrice1(state, price) {
-      state.minterTldPrice1 = price;
-    },
-    setMinterTldPrice2(state, price) {
-      state.minterTldPrice2 = price;
-    },
-    setMinterTldPrice3(state, price) {
-      state.minterTldPrice3 = price;
-    },
-    setMinterTldPrice4(state, price) {
-      state.minterTldPrice4 = price;
-    },
-    setMinterTldPrice5(state, price) {
-      state.minterTldPrice5 = price;
-    },
-    setReferralFee(state, fee) {
-      state.referralFee = Number(fee);
-    },
-  },
+		setMinterPaused(state, paused) {
+			state.minterPaused = paused
+		},
 
-  actions: {
-    async fetchMinterContractData({commit, state}) {
-      commit("setMinterLoadingData", true);
+		setMinterTldPrice1(state, price) {
+			state.minterTldPrice1 = price
+		},
+		setMinterTldPrice2(state, price) {
+			state.minterTldPrice2 = price
+		},
+		setMinterTldPrice3(state, price) {
+			state.minterTldPrice3 = price
+		},
+		setMinterTldPrice4(state, price) {
+			state.minterTldPrice4 = price
+		},
+		setMinterTldPrice5(state, price) {
+			state.minterTldPrice5 = price
+		},
+		setReferralFee(state, fee) {
+			state.referralFee = Number(fee)
+		},
+	},
 
-      let fProvider = getFallbackProvider(state.tldChainId);
+	actions: {
+		async fetchMinterContractData({ commit, state }) {
+			commit('setMinterLoadingData', true)
 
-      // minter contract
-      const minterIntfc = new ethers.utils.Interface(MinterAbi);
-      const minterContract = new ethers.Contract(state.minterAddress, minterIntfc, fProvider);
+			let fProvider = getFallbackProvider(state.tldChainId)
 
-      // check if TLD contract is paused
-      const paused = await minterContract.paused();
-      commit("setMinterPaused", paused);
+			// minter contract
+			const minterIntfc = new ethers.utils.Interface(MinterAbi)
+			const minterContract = new ethers.Contract(state.minterAddress, minterIntfc, fProvider)
 
-      // get price for 1 char
-      const priceWei1 = await minterContract.price1char();
-      const domainPrice1 = ethers.utils.formatEther(priceWei1);
-      commit("setMinterTldPrice1", domainPrice1);
-      // get price for 2 chars
-      const priceWei2 = await minterContract.price2char();
-      const domainPrice2 = ethers.utils.formatEther(priceWei2);
-      commit("setMinterTldPrice2", domainPrice2);
-      // get price for 3 chars
-      const priceWei3 = await minterContract.price3char();
-      const domainPrice3 = ethers.utils.formatEther(priceWei3);
-      commit("setMinterTldPrice3", domainPrice3);
-      // get price for 4 chars
-      const priceWei4 = await minterContract.price4char();
-      const domainPrice4 = ethers.utils.formatEther(priceWei4);
-      commit("setMinterTldPrice4", domainPrice4);
-      // get price for 5 chars
-      const priceWei5 = await minterContract.price5char();
-      const domainPrice5 = ethers.utils.formatEther(priceWei5);
-      commit("setMinterTldPrice5", domainPrice5);
+			// check if TLD contract is paused
+			const paused = await minterContract.paused()
+			commit('setMinterPaused', paused)
 
-      // fetch referral fee
-      const refFee = await minterContract.referralFee();
-      commit("setReferralFee", refFee);
+			// get price for 1 char
+			const priceWei1 = await minterContract.price1char()
+			const domainPrice1 = ethers.utils.formatEther(priceWei1)
+			commit('setMinterTldPrice1', domainPrice1)
+			// get price for 2 chars
+			const priceWei2 = await minterContract.price2char()
+			const domainPrice2 = ethers.utils.formatEther(priceWei2)
+			commit('setMinterTldPrice2', domainPrice2)
+			// get price for 3 chars
+			const priceWei3 = await minterContract.price3char()
+			const domainPrice3 = ethers.utils.formatEther(priceWei3)
+			commit('setMinterTldPrice3', domainPrice3)
+			// get price for 4 chars
+			const priceWei4 = await minterContract.price4char()
+			const domainPrice4 = ethers.utils.formatEther(priceWei4)
+			commit('setMinterTldPrice4', domainPrice4)
+			// get price for 5 chars
+			const priceWei5 = await minterContract.price5char()
+			const domainPrice5 = ethers.utils.formatEther(priceWei5)
+			commit('setMinterTldPrice5', domainPrice5)
 
-      commit("setMinterLoadingData", false);
-    }
-  }
-};
+			// fetch referral fee
+			const refFee = await minterContract.referralFee()
+			commit('setReferralFee', refFee)
+
+			commit('setMinterLoadingData', false)
+		},
+	},
+}

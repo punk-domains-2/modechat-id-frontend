@@ -1,417 +1,432 @@
-import { ethers } from 'ethers';
-import { useEthers, displayEther, shortenAddress } from 'vue-dapp';
-import MinterAbi from "../../abi/Minter.json";
-import TldAbi from "../../abi/PunkTLD.json";
+import { ethers } from 'ethers'
+import { useEthers, displayEther, shortenAddress } from 'vue-dapp'
+import MinterAbi from '../../abi/Minter.json'
+import TldAbi from '../../abi/PunkTLD.json'
 
-const { address, balance, chainId, signer } = useEthers();
+const { address, balance, chainId, signer } = useEthers()
 
 export default {
-  namespaced: true,
-  
-  state: () => ({ 
-    canUserBuy: true, // set to true, because anyone can mint a domain now (before only NFT holders were eligible)
-    discountEligible: false,
-    isTldAdmin: false,
-    isMinterAdmin: false,
-    isRoyaltyFeeUpdater: false,
-    nftAddress: "", // not relevant for this specific case
-    selectedName: null, // domain name that appears as the main profile name
-    selectedNameData: null,
-    selectedNameImageSvg: null,
-    selectedNameKey: null,
-    tokenAddress: "",
-    tokenContract: null,
-    tokenAllowance: 0, // user's allowance for wrapper contract
-    tokenBalance: 0, // user's balance
-    tokenName: "ETH",
-    tokenDecimals: 18,
-    userAddress: null,
-    userAllDomainNames: [], // all domain names of current user (default + manually added)
-    userDomainNamesKey: null,
-    userShortAddress: null,
-    userBalanceWei: 0, // ETH balance in wei
-    userBalance: 0 // ETH balance
-  }),
+	namespaced: true,
 
-  getters: { 
-    getCanUserBuy(state) {
-      return state.canUserBuy;
-    },
-    getDiscountEligible(state) {
-      return state.discountEligible;
-    },
-    getUserAddress(state) {
-      return state.userAddress;
-    },
-    getUserBalance(state) {
-      return state.userBalance;
-    },
-    getUserBalanceWei(state) {
-      return state.userBalanceWei;
-    },
-    getUserAllDomainNames(state) {
-      return state.userAllDomainNames;
-    },
-    getUserSelectedName(state) {
-      return state.selectedName;
-    },
-    getUserSelectedNameData(state) {
-      return state.selectedNameData;
-    },
-    getUserSelectedNameImageSvg(state) {
-      return state.selectedNameImageSvg;
-    },
-    getUserShortAddress(state) {
-      return state.userShortAddress;
-    },
-    getPaymentTokenAddress(state) {
-      return state.tokenAddress;
-    },
-    getPaymentTokenAllowance(state) {
-      return state.tokenAllowance;
-    },
-    getPaymentTokenBalance(state) {
-      return state.tokenBalance;
-    },
-    getPaymentTokenContract(state) {
-      return state.tokenContract;
-    },
-    getPaymentTokenName(state) {
-      return state.tokenName;
-    },
-    getPaymentTokenDecimals(state) {
-      return state.tokenDecimals;
-    },
-    isUserRoyaltyFeeUpdater(state) {
-      return state.isRoyaltyFeeUpdater;
-    },
-    isUserMinterAdmin(state) {
-      return state.isMinterAdmin;
-    },
-    isUserTldAdmin(state) {
-      return state.isTldAdmin;
-    }
-  },
+	state: () => ({
+		canUserBuy: true, // set to true, because anyone can mint a domain now (before only NFT holders were eligible)
+		discountEligible: false,
+		isTldAdmin: false,
+		isMinterAdmin: false,
+		isRoyaltyFeeUpdater: false,
+		nftAddress: '', // not relevant for this specific case
+		selectedName: null, // domain name that appears as the main profile name
+		selectedNameData: null,
+		selectedNameImageSvg: null,
+		selectedNameKey: null,
+		tokenAddress: '',
+		tokenContract: null,
+		tokenAllowance: 0, // user's allowance for wrapper contract
+		tokenBalance: 0, // user's balance
+		tokenName: 'ETH',
+		tokenDecimals: 18,
+		userAddress: null,
+		userAllDomainNames: [], // all domain names of current user (default + manually added)
+		userDomainNamesKey: null,
+		userShortAddress: null,
+		userBalanceWei: 0, // ETH balance in wei
+		userBalance: 0, // ETH balance
+	}),
 
-  mutations: { 
-    addDomainManually(state, domainName) {
-      let userDomainNames = [];
+	getters: {
+		getCanUserBuy(state) {
+			return state.canUserBuy
+		},
+		getDiscountEligible(state) {
+			return state.discountEligible
+		},
+		getUserAddress(state) {
+			return state.userAddress
+		},
+		getUserBalance(state) {
+			return state.userBalance
+		},
+		getUserBalanceWei(state) {
+			return state.userBalanceWei
+		},
+		getUserAllDomainNames(state) {
+			return state.userAllDomainNames
+		},
+		getUserSelectedName(state) {
+			return state.selectedName
+		},
+		getUserSelectedNameData(state) {
+			return state.selectedNameData
+		},
+		getUserSelectedNameImageSvg(state) {
+			return state.selectedNameImageSvg
+		},
+		getUserShortAddress(state) {
+			return state.userShortAddress
+		},
+		getPaymentTokenAddress(state) {
+			return state.tokenAddress
+		},
+		getPaymentTokenAllowance(state) {
+			return state.tokenAllowance
+		},
+		getPaymentTokenBalance(state) {
+			return state.tokenBalance
+		},
+		getPaymentTokenContract(state) {
+			return state.tokenContract
+		},
+		getPaymentTokenName(state) {
+			return state.tokenName
+		},
+		getPaymentTokenDecimals(state) {
+			return state.tokenDecimals
+		},
+		isUserRoyaltyFeeUpdater(state) {
+			return state.isRoyaltyFeeUpdater
+		},
+		isUserMinterAdmin(state) {
+			return state.isMinterAdmin
+		},
+		isUserTldAdmin(state) {
+			return state.isTldAdmin
+		},
+	},
 
-      if (address.value) {
-        state.userDomainNamesKey = "userDomainNames" + String(chainId.value) + String(shortenAddress(address.value));
-        state.selectedNameKey = "selectedName" + String(chainId.value) + String(shortenAddress(address.value));
+	mutations: {
+		addDomainManually(state, domainName) {
+			let userDomainNames = []
 
-        if (localStorage.getItem(state.userDomainNamesKey)) {
-          userDomainNames = JSON.parse(localStorage.getItem(state.userDomainNamesKey));
-        }
+			if (address.value) {
+				state.userDomainNamesKey =
+					'userDomainNames' + String(chainId.value) + String(shortenAddress(address.value))
+				state.selectedNameKey = 'selectedName' + String(chainId.value) + String(shortenAddress(address.value))
 
-        if (!userDomainNames.includes(domainName)) {
-          userDomainNames.push(domainName);
-        }
+				if (localStorage.getItem(state.userDomainNamesKey)) {
+					userDomainNames = JSON.parse(localStorage.getItem(state.userDomainNamesKey))
+				}
 
-        for (let udName of userDomainNames) {
-          if (!state.userAllDomainNames.includes(udName)) {
-            state.userAllDomainNames.push(udName);
-          }
-        }
+				if (!userDomainNames.includes(domainName)) {
+					userDomainNames.push(domainName)
+				}
 
-        localStorage.setItem(state.userDomainNamesKey, JSON.stringify(userDomainNames));
-      }
-      
-    },
+				for (let udName of userDomainNames) {
+					if (!state.userAllDomainNames.includes(udName)) {
+						state.userAllDomainNames.push(udName)
+					}
+				}
 
-    setUserData(state) {
-      state.userAddress = address.value;
-      state.userShortAddress = shortenAddress(address.value);
-      state.userBalanceWei = balance.value;
-      state.userBalance = displayEther(balance.value);
-    },
+				localStorage.setItem(state.userDomainNamesKey, JSON.stringify(userDomainNames))
+			}
+		},
 
-    setCanUserBuy(state, canBuy) {
-      state.canUserBuy = canBuy;
-    },
+		setUserData(state) {
+			state.userAddress = address.value
+			state.userShortAddress = shortenAddress(address.value)
+			state.userBalanceWei = balance.value
+			state.userBalance = displayEther(balance.value)
+		},
 
-    setCanGetDiscount(state, eligible) {
-      state.discountEligible = eligible;
-    },
+		setCanUserBuy(state, canBuy) {
+			state.canUserBuy = canBuy
+		},
 
-    setDefaultName(state, defName) {
-      if (!state.userAllDomainNames.includes(defName)) {
-        state.userAllDomainNames.push(defName);
-      }
-    },
+		setCanGetDiscount(state, eligible) {
+			state.discountEligible = eligible
+		},
 
-    setIsRoyaltyFeeUpdater(state, admin) {
-      state.isRoyaltyFeeUpdater = admin;
-    },
+		setDefaultName(state, defName) {
+			if (!state.userAllDomainNames.includes(defName)) {
+				state.userAllDomainNames.push(defName)
+			}
+		},
 
-    setIsMinterAdmin(state, admin) {
-      state.isMinterAdmin = admin;
-    },
+		setIsRoyaltyFeeUpdater(state, admin) {
+			state.isRoyaltyFeeUpdater = admin
+		},
 
-    setIsTldAdmin(state, admin) {
-      state.isTldAdmin = admin;
-    },
+		setIsMinterAdmin(state, admin) {
+			state.isMinterAdmin = admin
+		},
 
-    setSelectedName(state, selectedName) {
-      state.selectedName = selectedName;
-      localStorage.setItem(state.selectedNameKey, state.selectedName);
-      localStorage.setItem("connected", "metamask");
-    },
+		setIsTldAdmin(state, admin) {
+			state.isTldAdmin = admin
+		},
 
-    setSelectedNameKey(state, selectedNameKey) {
-      state.selectedNameKey = selectedNameKey;
-    },
+		setSelectedName(state, selectedName) {
+			state.selectedName = selectedName
+			localStorage.setItem(state.selectedNameKey, state.selectedName)
+			localStorage.setItem('connected', 'metamask')
+		},
 
-    setSelectedNameData(state, nameData) {
-      state.selectedNameData = nameData;
-    },
+		setSelectedNameKey(state, selectedNameKey) {
+			state.selectedNameKey = selectedNameKey
+		},
 
-    setSelectedNameImageSvg(state, imageSvg) {
-      state.selectedNameImageSvg = imageSvg;
-    },
+		setSelectedNameData(state, nameData) {
+			state.selectedNameData = nameData
+		},
 
-    setUserDomainNamesKey(state, key) {
-      state.userDomainNamesKey = key;
-    },
+		setSelectedNameImageSvg(state, imageSvg) {
+			state.selectedNameImageSvg = imageSvg
+		},
 
-    setPaymentTokenAllowance(state, allowance) {
-      state.tokenAllowance = allowance;
-    },
+		setUserDomainNamesKey(state, key) {
+			state.userDomainNamesKey = key
+		},
 
-    setPaymentTokenBalance(state, balance) {
-      state.tokenBalance = balance;
-    },
+		setPaymentTokenAllowance(state, allowance) {
+			state.tokenAllowance = allowance
+		},
 
-    setPaymentTokenContract(state, contract) {
-      state.tokenContract = contract;
-    },
+		setPaymentTokenBalance(state, balance) {
+			state.tokenBalance = balance
+		},
 
-    setUserAllDomainNames(state, domains) {
-      state.userAllDomainNames = domains;
-    }
-  },
+		setPaymentTokenContract(state, contract) {
+			state.tokenContract = contract
+		},
 
-  actions: { 
-    async checkIfAdmin({ commit, rootGetters }) {
-      if (address.value) {
-        // check if user has any admin privileges
-        const minterIntfc = new ethers.utils.Interface([
-          "function owner() public view returns (address)",
-          "function isManager(address) public view returns (bool)"
-        ]);
+		setUserAllDomainNames(state, domains) {
+			state.userAllDomainNames = domains
+		},
+	},
 
-        const minterContract = new ethers.Contract(rootGetters["tld/getMinterAddress"], minterIntfc, signer.value);
+	actions: {
+		async checkIfAdmin({ commit, rootGetters }) {
+			if (address.value) {
+				// check if user has any admin privileges
+				const minterIntfc = new ethers.utils.Interface([
+					'function owner() public view returns (address)',
+					'function isManager(address) public view returns (bool)',
+				])
 
-        const minterAdmin = await minterContract.owner();
+				const minterContract = new ethers.Contract(
+					rootGetters['tld/getMinterAddress'],
+					minterIntfc,
+					signer.value,
+				)
 
-        if (minterAdmin === address.value) {
-          commit("setIsMinterAdmin", true);
-        } else {
-          commit("setIsMinterAdmin", false);
-        }
+				const minterAdmin = await minterContract.owner()
 
-        if (minterAdmin != address.value) {
-          // check if current user is manager of the minter contract
-          const isManager = await minterContract.isManager(address.value);
+				if (minterAdmin === address.value) {
+					commit('setIsMinterAdmin', true)
+				} else {
+					commit('setIsMinterAdmin', false)
+				}
 
-          if (isManager) {
-            commit("setIsMinterAdmin", true);
-          } else {
-            commit("setIsMinterAdmin", false);
-          }
-        }
+				if (minterAdmin != address.value) {
+					// check if current user is manager of the minter contract
+					const isManager = await minterContract.isManager(address.value)
 
-        // check if user has any admin privileges
-        const tldIntfc = new ethers.utils.Interface(TldAbi);
-        const tldContract = new ethers.Contract(rootGetters["tld/getTldAddress"], tldIntfc, signer.value);
+					if (isManager) {
+						commit('setIsMinterAdmin', true)
+					} else {
+						commit('setIsMinterAdmin', false)
+					}
+				}
 
-        const tldAdmin = await tldContract.owner();
+				// check if user has any admin privileges
+				const tldIntfc = new ethers.utils.Interface(TldAbi)
+				const tldContract = new ethers.Contract(rootGetters['tld/getTldAddress'], tldIntfc, signer.value)
 
-        if (tldAdmin === address.value) {
-          commit("setIsTldAdmin", true);
-        } else {
-          commit("setIsTldAdmin", false);
-        }
-      }
-    },
+				const tldAdmin = await tldContract.owner()
 
-    async fetchUserDomainNames({ dispatch, commit, state, rootState, rootGetters }, newAccount) {
-      let userDomainNames = [];
-      let userDomainNamesKey = null;
-      let selectedNameKey = null;
+				if (tldAdmin === address.value) {
+					commit('setIsTldAdmin', true)
+				} else {
+					commit('setIsTldAdmin', false)
+				}
+			}
+		},
 
-      if (address.value) {
-        dispatch("fetchCanUserBuy");
+		async fetchUserDomainNames({ dispatch, commit, state, rootState, rootGetters }, newAccount) {
+			let userDomainNames = []
+			let userDomainNamesKey = null
+			let selectedNameKey = null
 
-        userDomainNamesKey = "userDomainNames" + String(chainId.value) + String(shortenAddress(address.value));
-        selectedNameKey = "selectedName" + String(chainId.value) + String(shortenAddress(address.value));
+			if (address.value) {
+				dispatch('fetchCanUserBuy')
 
-        commit("setSelectedNameKey", selectedNameKey);
-        commit("setUserDomainNamesKey", userDomainNamesKey);
+				userDomainNamesKey = 'userDomainNames' + String(chainId.value) + String(shortenAddress(address.value))
+				selectedNameKey = 'selectedName' + String(chainId.value) + String(shortenAddress(address.value))
 
-        // reset user data in case there's a switch between accounts
-        if (newAccount) {
-          if (localStorage.getItem(selectedNameKey) && localStorage.getItem(selectedNameKey) !== String(null)) {
-            commit('setSelectedName', localStorage.getItem(selectedNameKey));
-          } else {
-            commit('setSelectedName', null);
-            commit("setSelectedNameData", null);
-            commit("setSelectedNameImageSvg", null);
-          }
+				commit('setSelectedNameKey', selectedNameKey)
+				commit('setUserDomainNamesKey', userDomainNamesKey)
 
-          commit("setUserAllDomainNames", []);
-        }
-      
-        if (localStorage.getItem(userDomainNamesKey)) {
-          userDomainNames = JSON.parse(localStorage.getItem(userDomainNamesKey));
-        }
+				// reset user data in case there's a switch between accounts
+				if (newAccount) {
+					if (
+						localStorage.getItem(selectedNameKey) &&
+						localStorage.getItem(selectedNameKey) !== String(null)
+					) {
+						commit('setSelectedName', localStorage.getItem(selectedNameKey))
+					} else {
+						commit('setSelectedName', null)
+						commit('setSelectedNameData', null)
+						commit('setSelectedNameImageSvg', null)
+					}
 
-        for (let udName of userDomainNames) {
-          commit('setDefaultName', udName);
-        }
-      
-        // fetch user's default name
-        const intfc = new ethers.utils.Interface(rootGetters["punk/getTldAbi"]);
-        const contract = new ethers.Contract(rootGetters["tld/getTldAddress"], intfc, signer.value);
+					commit('setUserAllDomainNames', [])
+				}
 
-        const userDefaultName = await contract.defaultNames(address.value);
+				if (localStorage.getItem(userDomainNamesKey)) {
+					userDomainNames = JSON.parse(localStorage.getItem(userDomainNamesKey))
+				}
 
-        if (userDefaultName) {
-          commit('setDefaultName', userDefaultName + rootState.tld.tldName);
+				for (let udName of userDomainNames) {
+					commit('setDefaultName', udName)
+				}
 
-          if (!userDomainNames.includes(userDefaultName + rootState.tld.tldName)) {
-            userDomainNames.push(userDefaultName + rootState.tld.tldName);
-          }
+				// fetch user's default name
+				const intfc = new ethers.utils.Interface(rootGetters['punk/getTldAbi'])
+				const contract = new ethers.Contract(rootGetters['tld/getTldAddress'], intfc, signer.value)
 
-          if (!state.selectedName) {
-            commit('setSelectedName', userDefaultName + rootState.tld.tldName);
-          }
-        }
+				const userDefaultName = await contract.defaultNames(address.value)
 
-        if (localStorage.getItem(selectedNameKey) && localStorage.getItem(selectedNameKey) !== String(null)) {
-          commit('setSelectedName', localStorage.getItem(selectedNameKey));
-        } else {
-          localStorage.setItem(selectedNameKey, state.selectedName);
-        }
+				if (userDefaultName) {
+					commit('setDefaultName', userDefaultName + rootState.tld.tldName)
 
-        localStorage.setItem(userDomainNamesKey, JSON.stringify(userDomainNames));
-        
-        dispatch("fetchSelectedNameData");
-      }
-    },
+					if (!userDomainNames.includes(userDefaultName + rootState.tld.tldName)) {
+						userDomainNames.push(userDefaultName + rootState.tld.tldName)
+					}
 
-    async fetchCanUserBuy({ commit, rootGetters }) {
-      if (address.value) {
-        // fetch if user can buy a domain
-        /*
+					if (!state.selectedName) {
+						commit('setSelectedName', userDefaultName + rootState.tld.tldName)
+					}
+				}
+
+				if (localStorage.getItem(selectedNameKey) && localStorage.getItem(selectedNameKey) !== String(null)) {
+					commit('setSelectedName', localStorage.getItem(selectedNameKey))
+				} else {
+					localStorage.setItem(selectedNameKey, state.selectedName)
+				}
+
+				localStorage.setItem(userDomainNamesKey, JSON.stringify(userDomainNames))
+
+				dispatch('fetchSelectedNameData')
+			}
+		},
+
+		async fetchCanUserBuy({ commit, rootGetters }) {
+			if (address.value) {
+				// fetch if user can buy a domain
+				/*
         const minterIntfc = new ethers.utils.Interface(MinterAbi);
         const minterContract = new ethers.Contract(rootGetters["tld/getMinterAddress"], minterIntfc, signer.value);
 
         const canMint = await minterContract.canUserMint(address.value);
         */
 
-        //commit("setCanUserBuy", canMint);
-        commit("setCanUserBuy", true); // minting now open to everyone
-      }
-    },
+				//commit("setCanUserBuy", canMint);
+				commit('setCanUserBuy', true) // minting now open to everyone
+			}
+		},
 
-    // fetch selectedName data (image etc.)
-    async fetchSelectedNameData({commit, state, rootGetters}) {
+		// fetch selectedName data (image etc.)
+		async fetchSelectedNameData({ commit, state, rootGetters }) {
+			if (state.selectedName) {
+				const nameArr = state.selectedName.split('.')
+				const name = nameArr[0]
 
-      if (state.selectedName) {
-        const nameArr = state.selectedName.split(".");
-        const name = nameArr[0];
-        
-        if (name) {
-          const intfc = new ethers.utils.Interface(rootGetters["punk/getTldAbi"]);
-          const contract = new ethers.Contract(rootGetters["tld/getTldAddress"], intfc, signer.value);
+				if (name) {
+					const intfc = new ethers.utils.Interface(rootGetters['punk/getTldAbi'])
+					const contract = new ethers.Contract(rootGetters['tld/getTldAddress'], intfc, signer.value)
 
-          const nameData = await contract.domains(name);
+					const nameData = await contract.domains(name)
 
-          commit("setSelectedNameData", nameData);
+					commit('setSelectedNameData', nameData)
 
-          // get contract image for that token ID
-          let metadata = await contract.tokenURI(nameData.tokenId);
-          let imgFound = false;
+					// get contract image for that token ID
+					let metadata = await contract.tokenURI(nameData.tokenId)
+					let imgFound = false
 
-          if (nameData.data) {
-            const customData = JSON.parse(nameData.data);
-          
-            if (customData.imgAddress) {
-              if (!customData.imgAddress.startsWith("0x")) {
-                commit("setSelectedNameImageSvg", customData.imgAddress.replace("ipfs://", "https://ipfs.io/ipfs/"));
-                imgFound = true;
-              } else if (customData.imgAddress) {
-                // fetch image URL of that PFP
-                const pfpInterface = new ethers.utils.Interface([
-                  "function tokenURI(uint256 tokenId) public view returns (string memory)"
-                ]);
-                const pfpContract = new ethers.Contract(customData.imgAddress, pfpInterface, signer.value);
-                metadata = await pfpContract.tokenURI(customData.imgTokenId);
-              }
-            }
+					if (nameData.data) {
+						const customData = JSON.parse(nameData.data)
 
-            if (metadata.includes("ipfs://")) {
-              metadata = metadata.replace("ipfs://", "https://ipfs.io/ipfs/");
-            } 
-            
-            if (metadata.includes("http")) {
-              const response = await fetch(metadata);
-              const result = await response.json();
+						if (customData.imgAddress) {
+							if (!customData.imgAddress.startsWith('0x')) {
+								commit(
+									'setSelectedNameImageSvg',
+									customData.imgAddress.replace('ipfs://', 'https://ipfs.io/ipfs/'),
+								)
+								imgFound = true
+							} else if (customData.imgAddress) {
+								// fetch image URL of that PFP
+								const pfpInterface = new ethers.utils.Interface([
+									'function tokenURI(uint256 tokenId) public view returns (string memory)',
+								])
+								const pfpContract = new ethers.Contract(
+									customData.imgAddress,
+									pfpInterface,
+									signer.value,
+								)
+								metadata = await pfpContract.tokenURI(customData.imgTokenId)
+							}
+						}
 
-              if (result && result.image) {
-                commit("setSelectedNameImageSvg", result.image.replace("ipfs://", "https://ipfs.io/ipfs/"));
-                imgFound = true;
-              } else {
-                commit("setSelectedNameImageSvg", null);
-              }
-            }
-          }
+						if (metadata.includes('ipfs://')) {
+							metadata = metadata.replace('ipfs://', 'https://ipfs.io/ipfs/')
+						}
 
-          if (metadata && !imgFound) {
-            const json = atob(metadata.substring(29));
-            const result = JSON.parse(json);
+						if (metadata.includes('http')) {
+							const response = await fetch(metadata)
+							const result = await response.json()
 
-            if (result && result.image) {
-              commit("setSelectedNameImageSvg", result.image);
-            } else {
-              commit("setSelectedNameImageSvg", null);
-            }
-          }
-        }
-      }
-      
-    },
+							if (result && result.image) {
+								commit(
+									'setSelectedNameImageSvg',
+									result.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
+								)
+								imgFound = true
+							} else {
+								commit('setSelectedNameImageSvg', null)
+							}
+						}
+					}
 
-    async removeDomainFromUserDomains({commit, state}, domainName) {
-      if (chainId.value) {
-        if (localStorage.getItem(state.userDomainNamesKey)) {
-          const userDomainNames = JSON.parse(localStorage.getItem(state.userDomainNamesKey));
-          state.userAllDomainNames = [];
+					if (metadata && !imgFound) {
+						const json = atob(metadata.substring(29))
+						const result = JSON.parse(json)
 
-          let newDomainNamesArray = [];
-          for (let udName of userDomainNames) {
-            if (udName != domainName) {
-              newDomainNamesArray.push(udName);
-              state.userAllDomainNames.push(udName);
-            }
-          }
+						if (result && result.image) {
+							commit('setSelectedNameImageSvg', result.image)
+						} else {
+							commit('setSelectedNameImageSvg', null)
+						}
+					}
+				}
+			}
+		},
 
-          localStorage.setItem(state.userDomainNamesKey, JSON.stringify(newDomainNamesArray));
+		async removeDomainFromUserDomains({ commit, state }, domainName) {
+			if (chainId.value) {
+				if (localStorage.getItem(state.userDomainNamesKey)) {
+					const userDomainNames = JSON.parse(localStorage.getItem(state.userDomainNamesKey))
+					state.userAllDomainNames = []
 
-          // if the removed domain name is currently marked as selected name, replace it with another or null
-          if (localStorage.getItem(state.selectedNameKey) && localStorage.getItem(state.selectedNameKey)==domainName) {
-            if (newDomainNamesArray.length > 0) {
-              commit('setSelectedName', newDomainNamesArray[0]);
-            }
-            commit('setSelectedName', null);
-          }
-        }
-  
-        
-      }
-    }
-  }
+					let newDomainNamesArray = []
+					for (let udName of userDomainNames) {
+						if (udName != domainName) {
+							newDomainNamesArray.push(udName)
+							state.userAllDomainNames.push(udName)
+						}
+					}
 
-};
+					localStorage.setItem(state.userDomainNamesKey, JSON.stringify(newDomainNamesArray))
+
+					// if the removed domain name is currently marked as selected name, replace it with another or null
+					if (
+						localStorage.getItem(state.selectedNameKey) &&
+						localStorage.getItem(state.selectedNameKey) == domainName
+					) {
+						if (newDomainNamesArray.length > 0) {
+							commit('setSelectedName', newDomainNamesArray[0])
+						}
+						commit('setSelectedName', null)
+					}
+				}
+			}
+		},
+	},
+}
