@@ -10,7 +10,7 @@
 					<h3 v-if="!getMinterPaused">Pause the minting contract</h3>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="togglePaused"
 						:disabled="waitingPaused"
@@ -49,7 +49,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changeReferralFee"
 						:disabled="waitingRf"
@@ -84,7 +84,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changePrice(1)"
 						:disabled="waitingPrice1"
@@ -119,7 +119,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changePrice(2)"
 						:disabled="waitingPrice2"
@@ -154,7 +154,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changePrice(3)"
 						:disabled="waitingPrice3"
@@ -189,7 +189,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changePrice(4)"
 						:disabled="waitingPrice4"
@@ -224,7 +224,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changePrice(5)"
 						:disabled="waitingPrice5"
@@ -259,7 +259,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changeMetadataAddress"
 						:disabled="waitingCma"
@@ -294,7 +294,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="changeMinterAddress"
 						:disabled="waitingCmia"
@@ -329,7 +329,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="transferMinterOwnership"
 						:disabled="waitingTmo"
@@ -364,7 +364,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="transferTldOwnership"
 						:disabled="waitingTdo"
@@ -415,7 +415,7 @@
 					</div>
 
 					<button
-						v-if="isActivated"
+						v-if="isConnected"
 						class="btn btn-primary btn-lg mt-3"
 						@click="mintFreeDomain"
 						:disabled="waitingMfd || buyNotValid(newDomain).invalid"
@@ -439,12 +439,13 @@
 
 <script lang="ts">
 import { ethers } from 'ethers'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { mapActions, mapGetters } from 'vuex'
 import { useToast, TYPE } from 'vue-toastification'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
 import MinterAbi from '../abi/Minter.json'
 import useDomainHelpers from '../hooks/useDomainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'Admin',
@@ -994,11 +995,11 @@ export default {
 	},
 
 	setup() {
-		const { address, isActivated, signer } = useEthers()
+		const { address, isConnected, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { buyNotValid } = useDomainHelpers()
 
-		return { address, buyNotValid, isActivated, signer, toast }
+		return { address, buyNotValid, isConnected, signer, toast }
 	},
 }
 </script>

@@ -68,7 +68,7 @@
 <script>
 import { ethers } from 'ethers'
 import { mapGetters } from 'vuex'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { useToast, TYPE } from 'vue-toastification'
 import tldsJson from '../abi/tlds.json'
 import tldAbi from '../abi/PunkTLD.json'
@@ -78,6 +78,7 @@ import EditUrl from '../components/domainEdit/EditUrl.vue'
 import Sidebar from '../components/Sidebar.vue'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'DomainDetails',
@@ -211,11 +212,11 @@ export default {
 	},
 
 	setup() {
-		const { isActivated, signer } = useEthers()
+		const { isConnected, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { getChainName, getFallbackProvider } = useChainHelpers()
 
-		return { getChainName, getFallbackProvider, isActivated, signer, toast }
+		return { getChainName, getFallbackProvider, isConnected, signer, toast }
 	},
 }
 </script>

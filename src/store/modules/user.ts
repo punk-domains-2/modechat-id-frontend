@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import MinterAbi from '../../abi/Minter.json'
 import TldAbi from '../../abi/PunkTLD.json'
 import { useVueDapp, shortenAddress } from '@vue-dapp/core'
-import { useEthers, displayEther } from '../../pinia-stores/ethers'
+import { useEthers } from '../../pinia-stores/ethers'
 import { storeToRefs } from 'pinia'
 
 export default {
@@ -129,7 +129,7 @@ export default {
 			state.userAddress = address.value
 			state.userShortAddress = shortenAddress(address.value)
 			state.userBalanceWei = balance.value
-			state.userBalance = displayEther(balance.value)
+			state.userBalance = ethers.utils.formatEther(balance.value)
 		},
 
 		setCanUserBuy(state, canBuy) {

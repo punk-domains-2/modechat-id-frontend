@@ -93,9 +93,10 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { ethers } from 'ethers'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { useToast, TYPE } from 'vue-toastification'
 import WaitingToast from './toasts/WaitingToast.vue'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'MyDomain',
@@ -184,7 +185,7 @@ export default {
 	},
 
 	setup() {
-		const { address, signer } = useEthers()
+		const { address, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 
 		return { address, signer, toast }

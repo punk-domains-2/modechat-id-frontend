@@ -33,8 +33,9 @@
 
 <script>
 import { ethers } from 'ethers'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { mapGetters } from 'vuex'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'MyTlds',
@@ -76,9 +77,9 @@ export default {
 	},
 
 	setup() {
-		const { address, isActivated, signer } = useEthers()
+		const { address, isConnected, signer } = storeToRefs(useEthers())
 
-		return { address, isActivated, signer }
+		return { address, isConnected, signer }
 	},
 }
 </script>

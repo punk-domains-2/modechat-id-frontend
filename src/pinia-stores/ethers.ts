@@ -3,17 +3,26 @@ import { ethers } from 'ethers'
 import { markRaw } from 'vue'
 import { useVueDapp } from '@vue-dapp/core'
 
-export function displayEther(balance) {
-	return ethers.utils.formatEther(balance)
-}
-
 export const useEthers = defineStore('Ethers', {
 	state: () => ({
 		provider: null,
 		signer: null,
 		balance: 0n,
 	}),
-	getters: {},
+	getters: {
+		address(state) {
+			const { address } = useVueDapp()
+			return address.value
+		},
+		chainId(state) {
+			const { chainId } = useVueDapp()
+			return chainId.value
+		},
+		isConnected(state) {
+			const { isConnected } = useVueDapp()
+			return isConnected.value
+		},
+	},
 	actions: {
 		async setWallet(_provider) {
 			this.provider = markRaw(new ethers.providers.Web3Provider(_provider))

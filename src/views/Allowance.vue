@@ -53,7 +53,7 @@
 import { ethers } from 'ethers'
 import { mapGetters, mapMutations } from 'vuex'
 import { useToast, TYPE } from 'vue-toastification'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 
 import tldsJson from '../abi/tlds.json'
 import tldAbi from '../abi/PunkTLD.json'
@@ -61,6 +61,7 @@ import erc20Abi from '../abi/Erc20.json'
 import Sidebar from '../components/Sidebar.vue'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'Allowance',
@@ -171,7 +172,7 @@ export default {
 	},
 
 	setup() {
-		const { signer } = useEthers()
+		const { signer } = storeToRefs(useEthers())
 		const toast = useToast()
 
 		const { getFallbackProvider } = useChainHelpers()

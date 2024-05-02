@@ -45,13 +45,14 @@
 <script>
 import { ethers } from 'ethers'
 import { mapActions, mapGetters } from 'vuex'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { useToast, TYPE } from 'vue-toastification'
 import tldsJson from '../abi/tlds.json'
 import tldAbi from '../abi/PunkTLD.json'
 import Sidebar from '../components/Sidebar.vue'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'TransferDomain',
@@ -197,7 +198,7 @@ export default {
 	},
 
 	setup() {
-		const { address, chainId, signer } = useEthers()
+		const { address, chainId, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { getFallbackProvider } = useChainHelpers()
 

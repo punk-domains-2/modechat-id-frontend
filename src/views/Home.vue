@@ -47,7 +47,7 @@
 
 		<!-- Minter contract paused -->
 		<button
-			v-if="isActivated && getMinterPaused && !getMinterLoadingData"
+			v-if="isConnected && getMinterPaused && !getMinterLoadingData"
 			class="btn btn-primary btn-lg mt-3 buy-button"
 			:disabled="true"
 		>
@@ -56,7 +56,7 @@
 
 		<!-- Minter contract loading data -->
 		<button
-			v-if="isActivated && isNetworkSupported && getMinterLoadingData"
+			v-if="isConnected && isNetworkSupported && getMinterLoadingData"
 			class="btn btn-primary btn-lg mt-3 buy-button"
 			:disabled="true"
 		>
@@ -66,7 +66,7 @@
 
 		<!-- Not eligible -->
 		<button
-			v-if="isActivated && isNetworkSupported && !getMinterPaused && !getCanUserBuy && !getMinterLoadingData"
+			v-if="isConnected && isNetworkSupported && !getMinterPaused && !getCanUserBuy && !getMinterLoadingData"
 			class="btn btn-primary btn-lg mt-3 buy-button"
 			:disabled="waiting || buyNotValid(chosenDomainName).invalid || !hasUserEnoughTokens"
 		>
@@ -76,7 +76,7 @@
 		<!-- Too low ETH balance -->
 		<button
 			v-if="
-				isActivated &&
+				isConnected &&
 				isNetworkSupported &&
 				!getMinterPaused &&
 				!hasUserEnoughTokens &&
@@ -92,7 +92,7 @@
 		<!-- Buy domain -->
 		<button
 			v-if="
-				isActivated &&
+				isConnected &&
 				isNetworkSupported &&
 				getCanUserBuy &&
 				!getMinterPaused &&
@@ -109,7 +109,7 @@
 
 		<!-- Connect Wallet -->
 		<button
-			v-if="!isActivated"
+			v-if="!isConnected"
 			class="btn btn-primary btn-lg mt-3 btn-Disconnected"
 			data-bs-toggle="modal"
 			data-bs-target="#connectModal"
@@ -117,7 +117,7 @@
 			Connect wallet
 		</button>
 
-		<div v-if="isActivated && !isNetworkSupported" class="mt-4">
+		<div v-if="isConnected && !isNetworkSupported" class="mt-4">
 			<button class="btn btn-primary btn-lg btn-Disconnected" @click="changeNetwork(this.getTldChainName)">
 				Switch to {{ getTldChainName }}
 			</button>
@@ -174,12 +174,12 @@
 		</div>
 	</div>
 
-	<Referral v-if="isActivated" />
+	<Referral v-if="isConnected" />
 </template>
 
 <script>
 import { ethers } from 'ethers'
-import { useBoard, useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { useToast, TYPE } from 'vue-toastification'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
@@ -188,6 +188,7 @@ import useDomainHelpers from '../hooks/useDomainHelpers'
 import useChainHelpers from '../hooks/useChainHelpers'
 import MinterAbi from '../abi/Minter.json'
 import erc20Abi from '../abi/Erc20.json'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'Home',
@@ -263,7 +264,7 @@ export default {
 		},
 
 		isNetworkSupported() {
-			if (this.isActivated) {
+			if (this.isConnected) {
 				if (this.chainId === this.getTldChainId) {
 					return true
 				}
@@ -374,8 +375,7 @@ export default {
 	},
 
 	setup() {
-		const { open } = useBoard()
-		const { address, chainId, isActivated, signer } = useEthers()
+		const { address, chainId, isConnected, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { buyNotValid } = useDomainHelpers()
 		const { switchNetwork } = useChainHelpers()
@@ -384,7 +384,7 @@ export default {
 			address,
 			buyNotValid,
 			chainId,
-			isActivated,
+			isConnected,
 			open,
 			signer,
 			switchNetwork,

@@ -174,7 +174,7 @@
 <script lang="ts">
 import { ethers } from 'ethers'
 import { mapGetters } from 'vuex'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { useToast, TYPE } from 'vue-toastification'
 
 import Erc20Abi from '../abi/Erc20.json'
@@ -182,6 +182,7 @@ import tldsJson from '../abi/tlds.json'
 import tldAbi from '../abi/PunkTLD.json'
 import WaitingToast from '../components/toasts/WaitingToast.vue'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'SendTokensComponent',
@@ -478,7 +479,7 @@ export default {
 	},
 
 	setup() {
-		const { address, balance, signer } = useEthers()
+		const { address, balance, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { getFallbackProvider } = useChainHelpers()
 

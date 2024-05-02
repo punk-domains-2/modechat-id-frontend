@@ -8,7 +8,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import Toast, { POSITION, TYPE } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import './index.css'
-import { VueDapp } from 'vue-dapp'
 import { createPinia } from 'pinia'
 
 const app = createApp(App)
@@ -34,8 +33,6 @@ app.use(createPinia())
 
 app.use(router)
 app.use(store)
-
-app.use(VueDapp)
 
 app.use(Toast, options)
 

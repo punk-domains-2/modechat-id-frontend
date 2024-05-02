@@ -6,7 +6,7 @@
 
 		<div class="col-md-9">
 			<!-- Show this if user is not connected -->
-			<div class="row" v-if="!isActivated">
+			<div class="row" v-if="!isConnected">
 				<div class="col-md-12 mb-3">
 					<div class="container text-center">
 						<h3>
@@ -19,7 +19,7 @@
 			</div>
 
 			<!-- Address and balance -->
-			<div class="row" v-if="isActivated">
+			<div class="row" v-if="isConnected">
 				<div class="col-md-6 mb-3">
 					<div class="container text-center">
 						<h3>Address</h3>
@@ -118,13 +118,14 @@
 <script lang="ts">
 import { mapGetters, mapMutations } from 'vuex'
 import { ethers } from 'ethers'
-import { useEthers } from 'vue-dapp'
+import { useEthers } from '../pinia-stores/ethers'
 import { useToast, TYPE } from 'vue-toastification'
 import MyDomain from '../components/MyDomain.vue'
 import Sidebar from '../components/Sidebar.vue'
 import Referral from '../components/Referral.vue'
 import tldAbi from '../abi/PunkTLD.json'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	name: 'Profile',
@@ -210,11 +211,11 @@ export default {
 	},
 
 	setup() {
-		const { address, isActivated, signer } = useEthers()
+		const { address, isConnected, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { getFallbackProvider } = useChainHelpers()
 
-		return { address, getFallbackProvider, isActivated, signer, toast }
+		return { address, getFallbackProvider, isConnected, signer, toast }
 	},
 }
 </script>
