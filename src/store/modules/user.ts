@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
-import { useEthers, displayEther, shortenAddress } from 'vue-dapp'
 import MinterAbi from '../../abi/Minter.json'
 import TldAbi from '../../abi/PunkTLD.json'
-
-const { address, balance, chainId, signer } = useEthers()
+import { useVueDapp, shortenAddress } from '@vue-dapp/core'
+import { useEthers, displayEther } from '../../pinia-stores/ethers'
+import { storeToRefs } from 'pinia'
 
 export default {
 	namespaced: true,
@@ -95,6 +95,8 @@ export default {
 
 	mutations: {
 		addDomainManually(state, domainName) {
+			const { address, chainId } = useVueDapp()
+
 			let userDomainNames = []
 
 			if (address.value) {
@@ -121,6 +123,9 @@ export default {
 		},
 
 		setUserData(state) {
+			const { address } = useVueDapp()
+			const { balance } = storeToRefs(useEthers())
+
 			state.userAddress = address.value
 			state.userShortAddress = shortenAddress(address.value)
 			state.userBalanceWei = balance.value
@@ -194,6 +199,9 @@ export default {
 
 	actions: {
 		async checkIfAdmin({ commit, rootGetters }) {
+			const { address } = useVueDapp()
+			const { signer } = storeToRefs(useEthers())
+
 			if (address.value) {
 				// check if user has any admin privileges
 				const minterIntfc = new ethers.utils.Interface([
@@ -244,6 +252,9 @@ export default {
 			let userDomainNames = []
 			let userDomainNamesKey = null
 			let selectedNameKey = null
+
+			const { address, chainId } = useVueDapp()
+			const { signer } = storeToRefs(useEthers())
 
 			if (address.value) {
 				dispatch('fetchCanUserBuy')
@@ -309,6 +320,8 @@ export default {
 		},
 
 		async fetchCanUserBuy({ commit, rootGetters }) {
+			const { address } = useVueDapp()
+
 			if (address.value) {
 				// fetch if user can buy a domain
 				/*
@@ -325,6 +338,8 @@ export default {
 
 		// fetch selectedName data (image etc.)
 		async fetchSelectedNameData({ commit, state, rootGetters }) {
+			const { signer } = storeToRefs(useEthers())
+
 			if (state.selectedName) {
 				const nameArr = state.selectedName.split('.')
 				const name = nameArr[0]
@@ -400,6 +415,8 @@ export default {
 		},
 
 		async removeDomainFromUserDomains({ commit, state }, domainName) {
+			const { chainId } = useVueDapp()
+
 			if (chainId.value) {
 				if (localStorage.getItem(state.userDomainNamesKey)) {
 					const userDomainNames = JSON.parse(localStorage.getItem(state.userDomainNamesKey))

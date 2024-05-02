@@ -2,77 +2,10 @@
 	<Navbar />
 
 	<div class="main-container background-main">
-		<!-- Connect Wallet modal -->
-		<!-- <div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="connectModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-sm" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Connect your wallet</h5>
-						<button
-							id="closeConnectModal"
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close"
-						>
-							<span aria-hidden="true"></span>
-						</button>
-					</div>
-					<div class="modal-body row">
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img
-								src="./assets/wallets/metamask.png"
-								class="card-img-top card-img-wallet"
-								alt="MetaMask"
-							/>
-						</div>
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img
-								src="./assets/wallets/bifrost.png"
-								class="card-img-top card-img-wallet"
-								alt="Bifrost"
-							/>
-						</div>
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img src="./assets/wallets/rabby.png" class="card-img-top card-img-wallet" alt="Rabby" />
-						</div>
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img src="./assets/wallets/brave.png" class="card-img-top card-img-wallet" alt="Brave" />
-						</div>
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img src="./assets/wallets/zerion.png" class="card-img-top card-img-wallet" alt="Zerion" />
-						</div>
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectCoinbase">
-							<img
-								src="./assets/wallets/coinbase.png"
-								class="card-img-top card-img-wallet"
-								alt="Coinbase"
-							/>
-						</div>
-
-
-						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-							<img
-								src="./assets/wallets/trust.png"
-								class="card-img-top card-img-wallet"
-								alt="Trust Wallet"
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div> -->
-		<!-- END Connect Wallet modal -->
-
 		<router-view></router-view>
 
 		<Footer />
-		<VueDappModal />
+		<VueDappModal auto-connect />
 	</div>
 </template>
 
@@ -87,6 +20,8 @@ import Footer from './components/Footer.vue'
 import tldsJson from './abi/tlds.json'
 import tldAbi from './abi/PunkTLD.json'
 import useChainHelpers from './hooks/useChainHelpers'
+import { useEthers } from './pinia-stores/ethers'
+import { useStore } from 'vuex'
 
 export default {
 	components: {
@@ -172,8 +107,28 @@ export default {
 	},
 
 	setup() {
-		const { addConnectors, chainId, address, connectTo } = useVueDapp()
+		const { addConnectors, chainId, connectTo, watchWalletUpdated, watchDisconnect } = useVueDapp()
 		addConnectors([new BrowserWalletConnector()])
+
+		const { setWallet, resetWallet, fetchBalance } = useEthers()
+
+		const store = useStore()
+
+		watchWalletUpdated(async wallet => {
+			setWallet(wallet.provider)
+			await fetchBalance()
+			store.commit('user/setUserData')
+			store.dispatch('user/fetchUserDomainNames', true)
+			store.dispatch('user/checkIfAdmin')
+
+			if (wallet.chainId >= 1) {
+				store.commit('network/setNetworkData')
+			}
+		})
+
+		watchDisconnect(() => {
+			resetWallet()
+		})
 
 		const { getFallbackProvider } = useChainHelpers()
 
@@ -188,26 +143,11 @@ export default {
 		// 	appUrl: 'https://id.modechat.xyz',
 		// })
 
-		return { address, chainId, connectTo, getFallbackProvider }
-	},
-
-	watch: {
-		address(newVal, oldVal) {
-			if (newVal) {
-				this.setUserData()
-				this.fetchUserDomainNames(true)
-				this.checkIfAdmin()
-			}
-		},
-
-		chainId(newVal, oldVal) {
-			if (this.chainId >= 1) {
-				this.setUserData()
-				this.setNetworkData()
-				this.fetchUserDomainNames(true)
-				this.checkIfAdmin()
-			}
-		},
+		return {
+			chainId,
+			connectTo,
+			getFallbackProvider,
+		}
 	},
 }
 </script>
