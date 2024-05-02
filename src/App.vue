@@ -108,7 +108,7 @@ export default {
 	},
 
 	setup() {
-		const { addConnectors, chainId, connectTo, watchWalletUpdated, watchDisconnect } = useVueDapp()
+		const { addConnectors, chainId, connectTo, watchConnect, watchDisconnect } = useVueDapp()
 		addConnectors([
 			new BrowserWalletConnector(),
 			new CoinbaseWalletConnector({
@@ -121,7 +121,7 @@ export default {
 
 		const store = useStore()
 
-		watchWalletUpdated(async wallet => {
+		watchConnect(async wallet => {
 			setWallet(wallet.provider)
 			await fetchBalance()
 			store.commit('user/setUserData')
