@@ -108,12 +108,7 @@
 		</button>
 
 		<!-- Connect Wallet -->
-		<button
-			v-if="!isConnected"
-			class="btn btn-primary btn-lg mt-3 btn-Disconnected"
-			data-bs-toggle="modal"
-			data-bs-target="#connectModal"
-		>
+		<button v-if="!isConnected" class="btn btn-primary btn-lg mt-3 btn-Disconnected" @click="open">
 			Connect wallet
 		</button>
 
@@ -189,6 +184,7 @@ import useChainHelpers from '../hooks/useChainHelpers'
 import MinterAbi from '../abi/Minter.json'
 import erc20Abi from '../abi/Erc20.json'
 import { storeToRefs } from 'pinia'
+import { useVueDappModal } from '@vue-dapp/modal'
 
 export default {
 	name: 'Home',
@@ -375,6 +371,7 @@ export default {
 	},
 
 	setup() {
+		const { open } = useVueDappModal()
 		const { address, chainId, isConnected, signer } = storeToRefs(useEthers())
 		const toast = useToast()
 		const { buyNotValid } = useDomainHelpers()
