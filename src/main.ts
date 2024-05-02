@@ -9,6 +9,7 @@ import Toast, { POSITION, TYPE } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import './index.css'
 import { VueDapp } from 'vue-dapp'
+import { createPinia } from 'pinia'
 
 const app = createApp(App)
 
@@ -28,6 +29,8 @@ const options = {
 		},
 	},
 }
+
+app.use(createPinia())
 
 app.use(router)
 app.use(store)

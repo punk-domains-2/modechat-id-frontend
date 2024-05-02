@@ -33,7 +33,7 @@
             >Marketplace</a>
             -->
 
-						<div v-if="isActivated" class="btn-group mx-2 navbar-menu-btn">
+						<div v-if="isConnected" class="btn-group mx-2 navbar-menu-btn">
 							<button
 								class="btn btn-primary dropdown-toggle"
 								type="button"
@@ -56,7 +56,7 @@
 							</ul>
 						</div>
 
-						<div v-if="isActivated" class="btn-group mx-2 navbar-menu-btn">
+						<div v-if="isConnected" class="btn-group mx-2 navbar-menu-btn">
 							<button
 								class="btn btn-primary dropdown-toggle"
 								type="button"
@@ -80,16 +80,11 @@
 							</ul>
 						</div>
 
-						<button
-							v-if="!isActivated"
-							class="btn btn-primary navbar-menu-btn"
-							data-bs-toggle="modal"
-							data-bs-target="#connectModal"
-						>
+						<button v-if="!isConnected" class="btn btn-primary navbar-menu-btn" @click="open">
 							Connect wallet
 						</button>
 
-						<div v-if="isActivated" class="btn-group mx-2 navbar-menu-btn">
+						<div v-if="isConnected" class="btn-group mx-2 navbar-menu-btn">
 							<router-link tag="button" class="btn btn-primary" to="/send-tokens"
 								>Send Tokens</router-link
 							>
@@ -103,8 +98,9 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex'
-import { useBoard, useEthers, useWallet } from 'vue-dapp'
 import useChainHelpers from '../hooks/useChainHelpers'
+import { useVueDapp } from '@vue-dapp/core'
+import { useVueDappModal } from '@vue-dapp/modal'
 
 export default {
 	name: 'Navbar',
@@ -144,13 +140,13 @@ export default {
 	},
 
 	setup() {
-		const { open } = useBoard()
-		const { disconnect } = useWallet()
-		const { isActivated } = useEthers()
+		const { open } = useVueDappModal()
+		const { isConnected, disconnect } = useVueDapp()
+
 		const { switchNetwork } = useChainHelpers()
 
 		return {
-			isActivated,
+			isConnected,
 			disconnect,
 			open,
 			switchNetwork,

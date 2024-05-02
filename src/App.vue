@@ -3,7 +3,7 @@
 
 	<div class="main-container background-main">
 		<!-- Connect Wallet modal -->
-		<div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="connectModalLabel" aria-hidden="true">
+		<!-- <div class="modal fade" id="connectModal" tabindex="-1" aria-labelledby="connectModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -55,12 +55,6 @@
 							/>
 						</div>
 
-						<!--
-
-            <div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
-              <img src="./assets/wallets/imtoken.png" class="card-img-top card-img-wallet" alt="imToken">
-            </div>
-            -->
 
 						<div class="card col-6 cursor-pointer wallet-img-wrapper" @click="connectMetaMask">
 							<img
@@ -72,18 +66,21 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<!-- END Connect Wallet modal -->
 
 		<router-view></router-view>
 
 		<Footer />
+		<VueDappModal />
 	</div>
 </template>
 
 <script lang="ts">
 import { ethers } from 'ethers'
-import { useEthers, useWallet, MetaMaskConnector, CoinbaseWalletConnector } from 'vue-dapp'
+import { BrowserWalletConnector, RdnsEnum, useVueDapp } from '@vue-dapp/core'
+import { VueDappModal } from '@vue-dapp/modal'
+import '@vue-dapp/modal/dist/style.css'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
@@ -95,17 +92,10 @@ export default {
 	components: {
 		Navbar,
 		Footer,
+		VueDappModal,
 	},
 
 	mounted() {
-		if (!this.isActivated) {
-			if (localStorage.getItem('connected') == 'metamask') {
-				this.connectMetaMask()
-			} else if (localStorage.getItem('connected') == 'coinbase') {
-				this.connectCoinbase()
-			}
-		}
-
 		this.fetchReferrer()
 		this.setTldContract()
 		this.fetchMinterContractData()
@@ -134,15 +124,14 @@ export default {
 		...mapMutations('tld', ['setTldContract']),
 
 		async connectCoinbase() {
-			await this.connectWith(this.coinbaseConnector)
-			localStorage.setItem('connected', 'coinbase') // store in local storage to autoconnect next time
-			document.getElementById('closeConnectModal').click()
+			await this.connectTo('CoinbaseWallet', undefined)
 		},
 
 		async connectMetaMask() {
-			await this.connectWith(this.mmConnector)
-			localStorage.setItem('connected', 'metamask') // store in local storage to autoconnect next time
-			document.getElementById('closeConnectModal').click()
+			await this.connectWith('BrowserWallet', {
+				target: 'rdns',
+				rdns: RdnsEnum.metamask,
+			})
 		},
 
 		async fetchReferrer() {
@@ -183,28 +172,23 @@ export default {
 	},
 
 	setup() {
-		const { address, chainId, isActivated } = useEthers()
-		const { connectWith } = useWallet()
+		const { addConnectors, chainId, address, connectTo } = useVueDapp()
+		addConnectors([new BrowserWalletConnector()])
+
 		const { getFallbackProvider } = useChainHelpers()
 
-		const coinbaseConnector = new CoinbaseWalletConnector({
-			appName: 'ModeChat ID',
-			jsonRpcUrl: 'https://mainnet.mode.network/',
-		})
+		// TODO: add @vue-dapp/coinbase
+		// const coinbaseConnector = new CoinbaseWalletConnector({
+		// 	appName: 'ModeChat ID',
+		// 	jsonRpcUrl: 'https://mainnet.mode.network/',
+		// })
 
-		const mmConnector = new MetaMaskConnector({
-			appUrl: 'https://id.modechat.xyz',
-		})
+		// TODO: vue-dapp v1 doesn't support metamask mobile link yet
+		// const mmConnector = new MetaMaskConnector({
+		// 	appUrl: 'https://id.modechat.xyz',
+		// })
 
-		return {
-			address,
-			chainId,
-			coinbaseConnector,
-			connectWith,
-			getFallbackProvider,
-			isActivated,
-			mmConnector,
-		}
+		return { address, chainId, connectTo, getFallbackProvider }
 	},
 
 	watch: {
@@ -217,26 +201,11 @@ export default {
 		},
 
 		chainId(newVal, oldVal) {
-			if (!this.isActivated) {
-				if (localStorage.getItem('connected') == 'metamask') {
-					this.connectMetaMask()
-				} else if (localStorage.getItem('connected') == 'coinbase') {
-					this.connectCoinbase()
-				}
-			}
-
 			if (this.chainId >= 1) {
 				this.setUserData()
 				this.setNetworkData()
 				this.fetchUserDomainNames(true)
 				this.checkIfAdmin()
-			}
-		},
-
-		isActivated(newVal, oldVal) {
-			if (!localStorage.getItem('connected') && localStorage.getItem('connected') !== 'null') {
-				// set this to auto-connect on next visit
-				localStorage.setItem('connected', 'metamask')
 			}
 		},
 	},

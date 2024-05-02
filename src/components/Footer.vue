@@ -1,11 +1,11 @@
 <template>
 	<div class="container-fluid text-center mt-3">
-		<router-link v-if="isActivated && isNetworkSupported" to="/profile">Profile</router-link>
+		<router-link v-if="isConnected && isNetworkSupported" to="/profile">Profile</router-link>
 
-		<span v-if="isActivated && isNetworkSupported"> | </span>
+		<span v-if="isConnected && isNetworkSupported"> | </span>
 
-		<router-link v-if="isActivated && isNetworkSupported" to="/send-tokens">Send Tokens</router-link>
-		<span v-if="isActivated && isNetworkSupported"> | </span>
+		<router-link v-if="isConnected && isNetworkSupported" to="/send-tokens">Send Tokens</router-link>
+		<span v-if="isConnected && isNetworkSupported"> | </span>
 
 		<router-link v-if="isUserMinterAdmin || isUserRoyaltyFeeUpdater || isUserTldAdmin" to="/admin"
 			>Admin</router-link
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { useEthers } from 'vue-dapp'
+import { useVueDapp } from '@vue-dapp/core'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -42,8 +42,8 @@ export default {
 	},
 
 	setup() {
-		const { isActivated } = useEthers()
-		return { isActivated }
+		const { isConnected } = useVueDapp()
+		return { isConnected }
 	},
 }
 </script>
