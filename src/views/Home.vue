@@ -39,7 +39,10 @@
 		</p>
 
 		<div class="text-align-header">
-			<p class="mt-5 price-text">Domain price: {{ getFormattedPrice(getPrice) }} {{ getPaymentTokenName }}</p>
+			<p class="mt-5 price-text">
+				Domain price: {{ getFormattedPrice(getPrice) }}
+				{{ getPaymentTokenName }}
+			</p>
 		</div>
 
 		<!-- Minter contract paused -->
@@ -132,23 +135,38 @@
 					<tbody>
 						<tr>
 							<td>1 character</td>
-							<td>{{ getFormattedPrice(getMinterTldPrice1) }} {{ getPaymentTokenName }}</td>
+							<td>
+								{{ getFormattedPrice(getMinterTldPrice1) }}
+								{{ getPaymentTokenName }}
+							</td>
 						</tr>
 						<tr>
 							<td>2 characters</td>
-							<td>{{ getFormattedPrice(getMinterTldPrice2) }} {{ getPaymentTokenName }}</td>
+							<td>
+								{{ getFormattedPrice(getMinterTldPrice2) }}
+								{{ getPaymentTokenName }}
+							</td>
 						</tr>
 						<tr>
 							<td>3 characters</td>
-							<td>{{ getFormattedPrice(getMinterTldPrice3) }} {{ getPaymentTokenName }}</td>
+							<td>
+								{{ getFormattedPrice(getMinterTldPrice3) }}
+								{{ getPaymentTokenName }}
+							</td>
 						</tr>
 						<tr>
 							<td>4 characters</td>
-							<td>{{ getFormattedPrice(getMinterTldPrice4) }} {{ getPaymentTokenName }}</td>
+							<td>
+								{{ getFormattedPrice(getMinterTldPrice4) }}
+								{{ getPaymentTokenName }}
+							</td>
 						</tr>
 						<tr>
 							<td>5+ characters</td>
-							<td>{{ getFormattedPrice(getMinterTldPrice5) }} {{ getPaymentTokenName }}</td>
+							<td>
+								{{ getFormattedPrice(getMinterTldPrice5) }}
+								{{ getPaymentTokenName }}
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -267,7 +285,9 @@ export default {
 			const existingHolder = await this.getTldContract.getDomainHolder(this.domainLowerCase)
 
 			if (existingHolder !== ethers.constants.AddressZero) {
-				this.toast('Sorry, but this domain name is already taken...', { type: TYPE.ERROR })
+				this.toast('Sorry, but this domain name is already taken...', {
+					type: TYPE.ERROR,
+				})
 				this.waiting = false
 				return
 			}
@@ -360,7 +380,16 @@ export default {
 		const { buyNotValid } = useDomainHelpers()
 		const { switchNetwork } = useChainHelpers()
 
-		return { address, buyNotValid, chainId, isActivated, open, signer, switchNetwork, toast }
+		return {
+			address,
+			buyNotValid,
+			chainId,
+			isActivated,
+			open,
+			signer,
+			switchNetwork,
+			toast,
+		}
 	},
 }
 </script>
