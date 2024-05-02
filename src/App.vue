@@ -22,7 +22,7 @@ import tldAbi from './abi/PunkTLD.json'
 import useChainHelpers from './hooks/useChainHelpers'
 import { useEthers } from './pinia-stores/ethers'
 import { useStore } from 'vuex'
-import { CoinbaseWalletConnector } from '@vue-dapp/coinbase'
+// import { CoinbaseWalletConnector } from '@vue-dapp/coinbase'
 
 export default {
 	components: {
@@ -111,10 +111,10 @@ export default {
 		const { addConnectors, chainId, connectTo, watchConnect, watchDisconnect } = useVueDapp()
 		addConnectors([
 			new BrowserWalletConnector(),
-			new CoinbaseWalletConnector({
-				appName: 'ModeChat ID',
-				jsonRpcUrl: `https://mainnet.mode.network/`,
-			}),
+			// new CoinbaseWalletConnector({
+			// 	appName: 'ModeChat ID',
+			// 	jsonRpcUrl: `https://mainnet.mode.network/`,
+			// }),
 		])
 
 		const { setWallet, resetWallet, fetchBalance } = useEthers()
