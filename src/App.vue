@@ -22,6 +22,7 @@ import tldAbi from './abi/PunkTLD.json'
 import useChainHelpers from './hooks/useChainHelpers'
 import { useEthers } from './pinia-stores/ethers'
 import { useStore } from 'vuex'
+import { CoinbaseWalletConnector } from '@vue-dapp/coinbase'
 
 export default {
 	components: {
@@ -108,7 +109,13 @@ export default {
 
 	setup() {
 		const { addConnectors, chainId, connectTo, watchWalletUpdated, watchDisconnect } = useVueDapp()
-		addConnectors([new BrowserWalletConnector()])
+		addConnectors([
+			new BrowserWalletConnector(),
+			new CoinbaseWalletConnector({
+				appName: 'ModeChat ID',
+				jsonRpcUrl: `https://mainnet.mode.network/`,
+			}),
+		])
 
 		const { setWallet, resetWallet, fetchBalance } = useEthers()
 
@@ -131,12 +138,6 @@ export default {
 		})
 
 		const { getFallbackProvider } = useChainHelpers()
-
-		// TODO: add @vue-dapp/coinbase
-		// const coinbaseConnector = new CoinbaseWalletConnector({
-		// 	appName: 'ModeChat ID',
-		// 	jsonRpcUrl: 'https://mainnet.mode.network/',
-		// })
 
 		// TODO: vue-dapp v1 doesn't support metamask mobile link yet
 		// const mmConnector = new MetaMaskConnector({
