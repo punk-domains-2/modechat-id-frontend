@@ -5,7 +5,7 @@
 		<router-view></router-view>
 
 		<Footer />
-		<VueDappModal auto-connect />
+		<VueDappModal auto-connect auto-connect-browser-wallet-if-solo />
 	</div>
 </template>
 
