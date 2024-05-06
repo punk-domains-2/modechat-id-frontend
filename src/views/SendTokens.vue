@@ -1,15 +1,15 @@
 <template>
-  <SendTokensComponent />
+	<SendTokensComponent />
 </template>
 
 <script>
-import SendTokensComponent from "../components/SendTokensComponent.vue";
+import SendTokensComponent from '../components/SendTokensComponent.vue'
 
 export default {
-  name: "SendTokens",
-  
-  components: {
-    SendTokensComponent
-  }
+	name: 'SendTokens',
+
+	components: {
+		SendTokensComponent,
+	},
 }
 </script>

@@ -1,11 +1,11 @@
-import tldAbi from "../../abi/PunkTLD.json";
+import tldAbi from '../../abi/PunkTLD.json'
 
 export default {
-  namespaced: true,
+	namespaced: true,
 
-  getters: { 
-    getTldAbi() {
-      return tldAbi;
-    }
-  }
-};
+	getters: {
+		getTldAbi() {
+			return tldAbi
+		},
+	},
+}

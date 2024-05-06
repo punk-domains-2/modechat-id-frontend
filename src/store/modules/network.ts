@@ -1,80 +1,79 @@
-import { useEthers } from 'vue-dapp';
-import tokens from "../../abi/tokens.json";
-
-const { chainId } = useEthers();
+import tokens from '../../abi/tokens.json'
+import { useVueDapp } from '@vue-dapp/core'
 
 export default {
-  namespaced: true,
-  
-  state: () => ({
-    networkCurrency: "ETH",
-    networkName: "Unsupported Network",
-    supportedNetworks: {
-      34443: "Mode"
-    }
-  }),
+	namespaced: true,
 
-  getters: { 
-    getBlockExplorerBaseUrl() {
-      // TODO
-      return "https://explorer.mode.network/";
-    },
-    
-    getChainId() {
-      return chainId.value;
-    },
+	state: () => ({
+		networkCurrency: 'ETH',
+		networkName: 'Unsupported Network',
+		supportedNetworks: {
+			34443: 'Mode',
+		},
+	}),
 
-    getNetworkCurrency(state) {
-      return state.networkCurrency;
-    },
+	getters: {
+		getBlockExplorerBaseUrl() {
+			// TODO
+			return 'https://explorer.mode.network/'
+		},
 
-    getNetworkName(state) {
-      const supportedIds = Object.keys(state.supportedNetworks);
+		getChainId() {
+			const { chainId } = useVueDapp()
+			return chainId.value
+		},
 
-      if (supportedIds && supportedIds.includes(String(chainId.value))) {
-        return state.networkName;
-      }
+		getNetworkCurrency(state) {
+			return state.networkCurrency
+		},
 
-      return "Unsupported Network";
-    },
+		getNetworkName(state) {
+			const { chainId } = useVueDapp()
+			const supportedIds = Object.keys(state.supportedNetworks)
 
-    getSupportedNetworks(state) {
-      return state.supportedNetworks;
-    },
+			if (supportedIds && supportedIds.includes(String(chainId.value))) {
+				return state.networkName
+			}
 
-    getSupportedNetworkIds(state) {
-      return Object.keys(state.supportedNetworks);
-    },
+			return 'Unsupported Network'
+		},
 
-    getSupportedNetworkNames(state) {
-      return Object.values(state.supportedNetworks);
-    },
+		getSupportedNetworks(state) {
+			return state.supportedNetworks
+		},
 
-    getTokens(state) {
-      return tokens[String(chainId.value)]
-    },
+		getSupportedNetworkIds(state) {
+			return Object.keys(state.supportedNetworks)
+		},
 
-    isNetworkSupported(state) {
-      const supportedIds = Object.keys(state.supportedNetworks);
+		getSupportedNetworkNames(state) {
+			return Object.values(state.supportedNetworks)
+		},
 
-      if (supportedIds && supportedIds.includes(String(chainId.value))) {
-        return true;
-      }
+		getTokens(state) {
+			const { chainId } = useVueDapp()
+			return tokens[String(chainId.value)]
+		},
 
-      return false;
-    }
-  },
+		isNetworkSupported(state) {
+			const { chainId } = useVueDapp()
+			const supportedIds = Object.keys(state.supportedNetworks)
 
-  mutations: { 
-    setNetworkData(state) {
-      // TODO
-      state.networkName = "Mode";
-      state.networkCurrency = "ETH";
-    }
-  },
+			if (supportedIds && supportedIds.includes(String(chainId.value))) {
+				return true
+			}
 
-  actions: { 
-    
-  }
+			return false
+		},
+	},
 
-};
+	mutations: {
+		setNetworkData(state) {
+			// TODO
+			state.networkName = 'Mode'
+			state.networkCurrency = 'ETH'
+		},
+	},
+
+	actions: {},
+}
