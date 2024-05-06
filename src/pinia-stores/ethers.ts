@@ -32,15 +32,11 @@ export const useEthersStore = defineStore('ethers', {
 
 export function useEthers() {
 	const ethersStore = useEthersStore()
-	const { address } = useVueDapp()
-
-	const checksummedAddress = address.value ? ethers.utils.getAddress(address.value) : null
 
 	return {
 		...useVueDapp(),
 		provider: computed(() => ethersStore.provider),
 		signer: computed(() => ethersStore.signer),
-		address: computed(() => checksummedAddress),
 		balance: computed(() => ethersStore.balance),
 		setWallet: ethersStore.setWallet,
 		resetWallet: ethersStore.resetWallet,
