@@ -211,7 +211,7 @@ export default {
 	},
 
 	setup() {
-		const { address, signer } = storeToRefs(useEthers())
+		const { address, signer } = useEthers()
 		const toast = useToast()
 
 		return { address, shortenAddress, signer, toast }

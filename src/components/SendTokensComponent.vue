@@ -479,7 +479,7 @@ export default {
 	},
 
 	setup() {
-		const { address, balance, signer } = storeToRefs(useEthers())
+		const { address, balance, signer } = useEthers()
 		const toast = useToast()
 		const { getFallbackProvider } = useChainHelpers()
 

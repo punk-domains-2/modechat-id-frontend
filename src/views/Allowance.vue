@@ -172,7 +172,7 @@ export default {
 	},
 
 	setup() {
-		const { signer } = storeToRefs(useEthers())
+		const { signer } = useEthers()
 		const toast = useToast()
 
 		const { getFallbackProvider } = useChainHelpers()

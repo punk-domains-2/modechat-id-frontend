@@ -198,7 +198,7 @@ export default {
 	},
 
 	setup() {
-		const { address, chainId, signer } = storeToRefs(useEthers())
+		const { address, chainId, signer } = useEthers()
 		const toast = useToast()
 		const { getFallbackProvider } = useChainHelpers()
 

@@ -372,7 +372,7 @@ export default {
 
 	setup() {
 		const { open } = useVueDappModal()
-		const { address, chainId, isConnected, signer } = storeToRefs(useEthers())
+		const { address, chainId, isConnected, signer } = useEthers()
 		const toast = useToast()
 		const { buyNotValid } = useDomainHelpers()
 		const { switchNetwork } = useChainHelpers()

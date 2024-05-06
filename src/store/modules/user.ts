@@ -124,7 +124,7 @@ export default {
 
 		setUserData(state) {
 			const { address } = useVueDapp()
-			const { balance } = storeToRefs(useEthers())
+			const { balance } = useEthers()
 
 			state.userAddress = address.value
 			state.userShortAddress = shortenAddress(address.value)
@@ -200,7 +200,7 @@ export default {
 	actions: {
 		async checkIfAdmin({ commit, rootGetters }) {
 			const { address } = useVueDapp()
-			const { signer } = storeToRefs(useEthers())
+			const { signer } = useEthers()
 
 			if (address.value) {
 				// check if user has any admin privileges
@@ -254,7 +254,7 @@ export default {
 			let selectedNameKey = null
 
 			const { address, chainId } = useVueDapp()
-			const { signer } = storeToRefs(useEthers())
+			const { signer } = useEthers()
 
 			if (address.value) {
 				dispatch('fetchCanUserBuy')
@@ -338,7 +338,7 @@ export default {
 
 		// fetch selectedName data (image etc.)
 		async fetchSelectedNameData({ commit, state, rootGetters }) {
-			const { signer } = storeToRefs(useEthers())
+			const { signer } = useEthers()
 
 			if (state.selectedName) {
 				const nameArr = state.selectedName.split('.')
