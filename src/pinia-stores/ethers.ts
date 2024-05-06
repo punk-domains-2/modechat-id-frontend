@@ -1,28 +1,14 @@
 import { defineStore } from 'pinia'
 import { ethers } from 'ethers'
-import { markRaw } from 'vue'
+import { computed, markRaw } from 'vue'
 import { useVueDapp } from '@vue-dapp/core'
 
-export const useEthers = defineStore('Ethers', {
+export const useEthersStore = defineStore('ethers', {
 	state: () => ({
 		provider: null,
 		signer: null,
 		balance: 0n,
 	}),
-	getters: {
-		address(state) {
-			const { address } = useVueDapp()
-			return address.value
-		},
-		chainId(state) {
-			const { chainId } = useVueDapp()
-			return chainId.value
-		},
-		isConnected(state) {
-			const { isConnected } = useVueDapp()
-			return isConnected.value
-		},
-	},
 	actions: {
 		async setWallet(_provider) {
 			this.provider = markRaw(new ethers.providers.Web3Provider(_provider))
@@ -43,3 +29,17 @@ export const useEthers = defineStore('Ethers', {
 		},
 	},
 })
+
+export function useEthers() {
+	const ethersStore = useEthersStore()
+
+	return {
+		...useVueDapp(),
+		provider: computed(() => ethersStore.provider),
+		signer: computed(() => ethersStore.signer),
+		balance: computed(() => ethersStore.balance),
+		setWallet: ethersStore.setWallet,
+		resetWallet: ethersStore.resetWallet,
+		fetchBalance: ethersStore.fetchBalance,
+	}
+}

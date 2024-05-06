@@ -995,7 +995,7 @@ export default {
 	},
 
 	setup() {
-		const { address, isConnected, signer } = storeToRefs(useEthers())
+		const { address, isConnected, signer } = useEthers()
 		const toast = useToast()
 		const { buyNotValid } = useDomainHelpers()
 

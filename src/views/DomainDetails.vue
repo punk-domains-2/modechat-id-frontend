@@ -212,7 +212,7 @@ export default {
 	},
 
 	setup() {
-		const { isConnected, signer } = storeToRefs(useEthers())
+		const { isConnected, signer } = useEthers()
 		const toast = useToast()
 		const { getChainName, getFallbackProvider } = useChainHelpers()
 
