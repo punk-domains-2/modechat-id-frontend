@@ -5,7 +5,7 @@
 		<router-view></router-view>
 
 		<Footer />
-		<VueDappModal auto-connect auto-connect-browser-wallet-if-solo />
+		<VueDappModal dark auto-connect auto-connect-browser-wallet-if-solo />
 	</div>
 </template>
 
@@ -103,16 +103,14 @@ export default {
 	},
 
 	setup() {
-		const { addConnectors, chainId, connectTo, watchConnect, watchDisconnect } = useVueDapp()
-		addConnectors([
-			new BrowserWalletConnector()
-		])
+		const { addConnectors, chainId, connectTo, watchWalletChanged, watchDisconnect } = useVueDapp()
+		addConnectors([new BrowserWalletConnector()])
 
 		const { setWallet, resetWallet, fetchBalance } = useEthers()
 
 		const store = useStore()
 
-		watchConnect(async wallet => {
+		watchWalletChanged(async wallet => {
 			setWallet(wallet.provider)
 			await fetchBalance()
 			store.commit('user/setUserData')
