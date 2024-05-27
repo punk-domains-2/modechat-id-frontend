@@ -217,7 +217,7 @@ export default {
 
 				const minterAdmin = await minterContract.owner()
 
-				if (minterAdmin === address.value) {
+				if (String(minterAdmin).toLowerCase() === String(address.value).toLowerCase()) {
 					commit('setIsMinterAdmin', true)
 				} else {
 					commit('setIsMinterAdmin', false)
@@ -240,7 +240,7 @@ export default {
 
 				const tldAdmin = await tldContract.owner()
 
-				if (tldAdmin === address.value) {
+				if (String(tldAdmin).toLowerCase() === String(address.value).toLowerCase()) {
 					commit('setIsTldAdmin', true)
 				} else {
 					commit('setIsTldAdmin', false)
