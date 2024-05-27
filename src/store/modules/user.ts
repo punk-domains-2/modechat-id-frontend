@@ -223,7 +223,7 @@ export default {
 					commit('setIsMinterAdmin', false)
 				}
 
-				if (minterAdmin != address.value) {
+				if (String(minterAdmin).toLowerCase() != String(address.value).toLowerCase()) {
 					// check if current user is manager of the minter contract
 					const isManager = await minterContract.isManager(address.value)
 
